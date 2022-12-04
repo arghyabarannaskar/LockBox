@@ -5,6 +5,7 @@
 #include<fstream>
 #include<algorithm>
 #include<cctype>
+#include<conio.h>
 using namespace std;
 
 
@@ -20,7 +21,16 @@ public:
     void encrypt(string &username, string &password);
     void changePassword();
     void runApp();
-    //Add password hide functionality here
+    void enterPass(string& pass){
+        char ch;
+        ch = getch();
+        while(ch !=13){
+            pass.push_back(ch);
+            cout << "*";
+            ch = getch();
+        }
+        cout << endl;
+    }
 };
 
 app::app(){
@@ -34,11 +44,11 @@ app::app(){
 }
 
 bool app::securityCheck(){
-    string uname, pword;
+    string uname, pword="";
     cout << "Enter the username: ";
     cin >> uname;
     cout << "Enter the password: ";
-    cin >> pword;
+    enterPass(pword);
     encrypt(uname, pword);
     if(username == uname && password == pword)
         return true;
@@ -54,12 +64,12 @@ void app::storeData(){
     ofstream fout;
     fout.open("store.txt", ios::app);
     char choice;
-    string website, pass;
+    string website, pass="";
     do{
         cout << "Enter the name of the website: ";
         cin >> website;
         cout << "Enter the password: ";
-        cin >> pass;
+        enterPass(pass);
         fout << website << " : " << pass << endl;
 
         cout << "Want to enter more data: Y/y for yes anything else to exit: ";
@@ -122,7 +132,7 @@ void app::changePassword(){
         cout << "Enter new username: ";
         cin >> username;
         cout << "Enter new password: ";
-        cin >> password;
+        enterPass(password);
         encrypt(username, password);
         newCount = newCount + username.length() + password.length() + 1;
         fout << username << " " << password;
