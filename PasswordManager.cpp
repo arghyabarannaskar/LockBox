@@ -1,4 +1,4 @@
-
+//version 1.0
 #include<iostream>
 #include<sstream>
 #include<string>
