@@ -20,6 +20,7 @@ public:
     void encrypt(string &username, string &password);
     void changePassword();
     void runApp();
+    //Add password hide functionality here
 };
 
 app::app(){
