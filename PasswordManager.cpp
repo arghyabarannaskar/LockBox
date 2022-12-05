@@ -1,4 +1,4 @@
-//version 1.2
+//version 1.2 windows
 #include<iostream>
 #include<sstream>
 #include<string>
