@@ -19,6 +19,8 @@ public:
     void storeData();
     void readData();
     void encrypt(string &username, string &password);
+    void setPassword(const string &file_name);
+    void enterCredentials(string &uname, string &pass);
     void changePassword();
     void runApp();
     void enterPass(string &pass);
@@ -28,19 +30,35 @@ app::app(){
     string line;
     ifstream fin("store.txt");
     getline(fin, line);
-    istringstream sin(line);
-    sin >> username >> password;
-    passwordCount = username.length() + password.length()+1;
+    if(line == "")
+        setPassword("store.txt");   
+    else{
+        istringstream sin(line);
+        sin >> username >> password;
+        passwordCount = username.length() + password.length()+1;
+    }
     fin.close();
+}
+
+void app::setPassword(const string &file_name){
+    cout << "Enter new Credentials: " << endl;
+    ofstream fout(file_name);
+    enterCredentials(username, password);
+    fout << username << " " << password << endl;
+    fout.close();
+}
+
+void app::enterCredentials(string &uname, string &pass){
+    cout << "Enter the username: ";
+    cin >> uname;
+    cout << "Enter the password: ";
+    enterPass(pass);
+    encrypt(uname, pass);
 }
 
 bool app::securityCheck(){
     string uname, pword="";
-    cout << "Enter the username: ";
-    cin >> uname;
-    cout << "Enter the password: ";
-    enterPass(pword);
-    encrypt(uname, pword);
+    enterCredentials(uname, pword);
     if(username == uname && password == pword)
         return true;
 
@@ -122,7 +140,6 @@ void app::encrypt(string &username, string &password){
 
 void app::changePassword(){
     ifstream fin("store.txt");
-    ofstream fout("Copy.txt");
     string line;
     int newCount = 0;
     cout << endl
@@ -130,27 +147,25 @@ void app::changePassword(){
          << "To reset username and password enter old Credentials first..." << endl;
     bool admin = securityCheck();
     if(admin){
-        
-        cout << "Enter new username: ";
-        cin >> username;
-        cout << "Enter new password: ";
-        enterPass(password);
-        encrypt(username, password);
+        setPassword("Copy.txt");
         newCount = newCount + username.length() + password.length() + 1;
-        fout << username << " " << password;
         fin.seekg(passwordCount, ios::beg);
+        ofstream fout("Copy.txt");
         while(getline(fin, line)){
             fout << line << endl;
         }
         passwordCount = newCount;
-        fin.close();
-        fout.close();
+        fin.close();  //Close files before removing or renaming
+        fout.close();  // Otherwise it would not work
         remove("store.txt");
         rename("Copy.txt", "store.txt");
     }
 }
 
 void app::runApp(){
+    cout << "+-------------------------------+" << endl;
+    cout << "| Welcome again, <<        !!!  |" << endl;
+    cout << "+-------------------------------+" << endl;
     bool admin = securityCheck();
 
     char choice;
