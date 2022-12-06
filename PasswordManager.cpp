@@ -1,4 +1,4 @@
-//version 1.3 windows
+//version 1.4 windows
 #include<iostream>
 #include<sstream>
 #include<string>
@@ -12,14 +12,15 @@ using namespace std;
 class app{
 private:
     int passwordCount;
-    string username, password;
+    string username, password, owner;
 public:
     app();
     bool securityCheck();
     void storeData();
     void readData();
     void encrypt(string &username, string &password);
-    void setPassword(const string &file_name);
+    void decrypt(string &uname);
+    void setPassword(const string file_name);
     void enterCredentials(string &uname, string &pass);
     void changePassword();
     void runApp();
@@ -36,15 +37,21 @@ app::app(){
         istringstream sin(line);
         sin >> username >> password;
         passwordCount = username.length() + password.length()+1;
+        string uname = username;
+        decrypt(uname);
+        this->owner = uname;
     }
     fin.close();
 }
 
-void app::setPassword(const string &file_name){
+void app::setPassword(const string file_name){
     cout << "Enter new Credentials: " << endl;
     ofstream fout(file_name);
     enterCredentials(username, password);
-    fout << username << " " << password << endl;
+    string uname = username;
+    decrypt(uname);
+    owner = uname;
+    fout << username << " " << password;
     fout.close();
 }
 
@@ -130,12 +137,16 @@ void app::readData(){
 
     fin.close();
 }
-
+char decrement(char c) { return c - 3; }
 char increment(char c) { return c + 3; }
 
 void app::encrypt(string &username, string &password){
     transform(username.begin(), username.end(), username.begin(), increment);
     transform(password.begin(), password.end(), password.begin(), increment);
+}
+
+void app::decrypt(string &uname){
+    transform(uname.begin(), uname.end(), uname.begin(), decrement);
 }
 
 void app::changePassword(){
@@ -147,10 +158,11 @@ void app::changePassword(){
          << "To reset username and password enter old Credentials first..." << endl;
     bool admin = securityCheck();
     if(admin){
+        password = "";
         setPassword("Copy.txt");
         newCount = newCount + username.length() + password.length() + 1;
         fin.seekg(passwordCount, ios::beg);
-        ofstream fout("Copy.txt");
+        ofstream fout("Copy.txt", ios::app);
         while(getline(fin, line)){
             fout << line << endl;
         }
@@ -164,7 +176,7 @@ void app::changePassword(){
 
 void app::runApp(){
     cout << "+-------------------------------+" << endl;
-    cout << "| Welcome again, <<        !!!  |" << endl;
+    cout << "| Welcome, "<<owner<<"      !!! |" << endl;
     cout << "+-------------------------------+" << endl;
     bool admin = securityCheck();
 
