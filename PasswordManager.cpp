@@ -21,16 +21,7 @@ public:
     void encrypt(string &username, string &password);
     void changePassword();
     void runApp();
-    void enterPass(string& pass){
-        char ch;
-        ch = getch();
-        while(ch !=13){
-            pass.push_back(ch);
-            cout << "*";
-            ch = getch();
-        }
-        cout << endl;
-    }
+    void enterPass(string &pass);
 };
 
 app::app(){
@@ -58,6 +49,17 @@ bool app::securityCheck(){
     cout << "+-------------------------------+" << endl;
 
     return false;
+}
+
+void app::enterPass(string& pass){
+    char ch;
+    ch = getch();
+    while(ch !=13){
+        pass.push_back(ch);
+        cout << "*";
+        ch = getch();
+    }
+    cout << endl;
 }
 
 void app::storeData(){
