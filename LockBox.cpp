@@ -12,7 +12,6 @@ using namespace std;
 
 class app{
 private:
-    int passwordCount;
     string username, password, owner, filename;
     unordered_map<string, string> websitePasswords;
 
